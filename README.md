@@ -1,11 +1,17 @@
 # react-native-progress-circle-gradient
 
-An animated progress circle with gradient
+An animated progress circle with an angular gradient.
 
 ## Installation
 
 ```sh
 npm install react-native-progress-circle-gradient
+```
+
+or 
+
+```sh
+yarn add react-native-progress-circle-gradient
 ```
 
 ## Usage

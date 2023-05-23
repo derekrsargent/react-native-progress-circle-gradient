@@ -1,18 +1,25 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-progress-circle-gradient';
+import { StyleSheet, View, Pressable, Text } from 'react-native';
+import { CircularProgress } from 'react-native-progress-circle-gradient';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
+  const [progress, setProgress] = React.useState(50);
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <View style={styles.progress}>
+        <CircularProgress
+          backgroundColor={'aliceblue'}
+          radius={128}
+          strokeWidth={20}
+          percentageComplete={progress}
+          colors={['#0000FF', '#00FF00']}
+        />
+        <Pressable onPress={() => setProgress(progress + 10)}>
+          <Text>Press me</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -20,12 +27,16 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+  progress: {
+    flex: 1,
+    marginTop: 100,
+    marginLeft: 50,
+  },
+  image: {
+    height: 400,
+    width: 100,
+    position: 'absolute',
   },
 });
