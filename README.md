@@ -1,8 +1,10 @@
 # react-native-progress-circle-gradient
 
-An animated progress circle with an angular gradient.
+An animated progress circle with an angular gradient.  
 
-## Installation
+This project is inspired by this [YouTube](https://www.youtube.com/watch?v=7SCzL-XnfUU) tutorial.
+
+## Installation (not yet on npm)
 
 ```sh
 npm install react-native-progress-circle-gradient
@@ -17,11 +19,17 @@ yarn add react-native-progress-circle-gradient
 ## Usage
 
 ```js
-import { multiply } from 'react-native-progress-circle-gradient';
+import { CircularProgress } from 'react-native-progress-circle-gradient';
 
 // ...
 
-const result = await multiply(3, 7);
+ <CircularProgress
+    backgroundColor={'#1F1B24'}
+    radius={100}
+    strokeWidth={20}
+    percentageComplete={percentageComplete}
+    colors={['#0000FF', '#00FF00']}
+/>
 ```
 
 ## Contributing
