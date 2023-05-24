@@ -31,7 +31,7 @@ import { CircularProgress } from 'react-native-progress-circle-gradient';
     colors={['#0000FF', '#00FF00']}
 />
 ```
-[](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example1.gif)
+![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example1.gif)
 
 ## Contributing
 
