@@ -121,7 +121,7 @@ export const CircularProgress: FC<CircularProgressProps> = ({
   const lines = calculateLines();
 
   return (
-    <Canvas style={{ width: radius * 2, height: radius * 2 }}>
+    <Canvas style={{ width: radius * 2 + 2, height: radius * 2 + 2 }}>
       <Group>
         {!!backgroundColor && (
           <Mask

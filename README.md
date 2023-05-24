@@ -33,6 +33,28 @@ import { CircularProgress } from 'react-native-progress-circle-gradient';
 ```
 ![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example1.gif)
 
+```js
+ <CircularProgress
+    backgroundColor={'#1F1B24'}
+    radius={100}
+    strokeWidth={20}
+    percentageComplete={percentageComplete}
+    colors={['#0000FF', '#FF0000', '#00FF00']}
+/>
+```
+![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example2.gif)
+
+```js
+ <CircularProgress
+    backgroundColor={'#1F1B24'}
+    radius={100}
+    strokeWidth={20}
+    percentageComplete={percentageComplete}
+    colors={['#0000FF', '#00FF00', '#0000FF']}
+/>
+```
+![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example3.gif)
+
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.

@@ -14,7 +14,7 @@ export default function App() {
           radius={128}
           strokeWidth={20}
           percentageComplete={progress}
-          colors={['#0000FF', '#00FF00']}
+          colors={['#0000FF', '#00FF00', '#0000FF']}
         />
         <Pressable onPress={() => setProgress(progress + 25)}>
           <Text style={styles.text}>Press me</Text>
