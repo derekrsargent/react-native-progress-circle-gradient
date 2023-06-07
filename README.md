@@ -4,7 +4,7 @@ An animated progress circle with an angular gradient.
 
 This project is inspired by this [YouTube](https://www.youtube.com/watch?v=7SCzL-XnfUU) tutorial.
 
-## Installation (not yet on npm)
+## Installation
 
 ```sh
 npm install react-native-progress-circle-gradient
@@ -16,22 +16,17 @@ or
 yarn add react-native-progress-circle-gradient
 ```
 
-type CircularProgressProps = {
-  colors: string[];
-  percentageComplete: number;
-  radius: number;
-  strokeWidth: number;
-  backgroundColor?: string;
-  duration?: number;
-  granularity?: number;
-};
-
 ## Props
 
 | Prop | Description | Type | Default | Required |
 | --- | --- | --- | --- | --- |
-| colors | The color hex values to be used for the angular gradient | String[] | N/A / true
-| percentageComplete | Show file differences that haven't been staged |
+| colors | The color hex values to be used for the angular gradient | String[] | N/A | true |
+| backgroundColor | The color hex value for the remaining progress | String | '#F0F8FF' | false |
+| duration | The duration of the animation in milliseconds | Number | 1250 | false |
+| granularity | Smaller progress circles can use a smaller granularity to increase performance | Number | 200 | false |
+| percentageComplete | The percentage of progress completed ranging from 0-100 | Number | 0 | false |
+| radius | The radius of the progress circle in points, measured from the center of the stroke | Number | 100 | false |
+| strokeWidth | The thickness of the progress circle | Number | 30 | false |
 
 ## Usage
 
