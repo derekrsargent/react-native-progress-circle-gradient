@@ -1,6 +1,6 @@
 {
   "name": "react-native-progress-circle-gradient",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "test",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -41,7 +41,7 @@
     "android"
   ],
   "repository": "https://github.com/derekrsargent/react-native-progress-circle-gradient",
-  "author": "derekrsargent <derek.r.sargent@gmail.com> (https://github.com/derekrsargent)",
+  "author": "derekrsargent <derekrsargent@gmail.com> (https://github.com/derekrsargent)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/derekrsargent/react-native-progress-circle-gradient/issues"

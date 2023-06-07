@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { PixelRatio } from 'react-native';
 import interpolate from 'color-interpolate';
 import {
@@ -12,13 +12,14 @@ import {
   Path,
   runTiming,
   Skia,
-  SkPaint,
-  SkPoint,
   StrokeCap,
   StrokeJoin,
   TileMode,
   useValue,
 } from '@shopify/react-native-skia';
+
+import type { FC } from 'react';
+import type { SkPaint, SkPoint } from '@shopify/react-native-skia';
 
 type Line = {
   x0: number;
@@ -30,9 +31,9 @@ type Line = {
 
 type CircularProgressProps = {
   colors: string[];
-  percentageComplete: number;
-  radius: number;
-  strokeWidth: number;
+  percentageComplete?: number;
+  radius?: number;
+  strokeWidth?: number;
   backgroundColor?: string;
   duration?: number;
   granularity?: number;
@@ -40,10 +41,10 @@ type CircularProgressProps = {
 
 export const CircularProgress: FC<CircularProgressProps> = ({
   colors,
-  percentageComplete,
-  radius,
-  strokeWidth,
-  backgroundColor,
+  percentageComplete = 0,
+  radius = 100,
+  strokeWidth = 20,
+  backgroundColor = '#F0F8FF',
   duration = 1250,
   granularity = 200,
 }) => {

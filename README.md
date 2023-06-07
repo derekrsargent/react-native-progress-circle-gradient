@@ -16,6 +16,23 @@ or
 yarn add react-native-progress-circle-gradient
 ```
 
+type CircularProgressProps = {
+  colors: string[];
+  percentageComplete: number;
+  radius: number;
+  strokeWidth: number;
+  backgroundColor?: string;
+  duration?: number;
+  granularity?: number;
+};
+
+## Props
+
+| Prop | Description | Type | Default | Required |
+| --- | --- | --- | --- | --- |
+| colors | The color hex values to be used for the angular gradient | String[] | N/A / true
+| percentageComplete | Show file differences that haven't been staged |
+
 ## Usage
 
 ```js
@@ -54,6 +71,16 @@ import { CircularProgress } from 'react-native-progress-circle-gradient';
 />
 ```
 ![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example3.gif)
+
+## Roadmap
+
+- Add support for children components (e.g. Text)
+- Add support for when progress > 100%
+- Add support for prop overloading 
+
+## Steps to Create Package
+
+Create library scaffolding using `npx create-react-native-library react-native-progress-circle-gradient`. And select the `JavaScript Library` option. When uploading a package to the npm registry it will first look at the `.gitignore` for files to exclude. You can also create a `.npmignore` file but note that will not be joined with the `.gitignore` file (it will now *only* look at the `.npmignore` file). The best way to tell npm would files to include is to list them in the `files` property in `package.json`. 
 
 ## Contributing
 
