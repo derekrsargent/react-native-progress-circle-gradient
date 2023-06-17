@@ -114,3 +114,7 @@ When you're sending a pull request:
 - Review the documentation to make sure it looks good.
 - Follow the pull request template when opening a pull request.
 - For pull requests that change the API or implementation, discuss with maintainers first by opening an issue.
+
+## Steps to create package
+
+Created library scaffolding using `npx create-react-native-library react-native-progress-circle-gradient` and select the `JavaScript Library` option. When uploading a package to the npm registry it will first look at the `.gitignore` for files to exclude. You can also create a `.npmignore` file but note that will not be joined with the `.gitignore` file (it will now _only_ look at the `.npmignore` file). The best way to tell npm which files to include is to list them in the `files` property of `package.json`.

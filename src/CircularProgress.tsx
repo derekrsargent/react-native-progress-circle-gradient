@@ -30,30 +30,41 @@ type Line = {
 };
 
 type CircularProgressProps = {
+  /** The color hex values array to be used for the angular gradient */
   colors: string[];
-  percentageComplete?: number;
-  radius?: number;
-  strokeWidth?: number;
+  /** The color hex value for the remaining progress */
   backgroundColor?: string;
+  /** Duration of the animation in milliseconds */
   duration?: number;
+  /** Smaller progress circle charts can use a smaller granularity to increase performance */
   granularity?: number;
+  /** The percentage of progress completed ranging from 0-100 */
+  percentageComplete?: number;
+  /** The radius of the progress circle in points, measured from the center of the stroke */
+  radius?: number;
+  /** Rotation of circular progress chart in degrees */
+  rotation?: number;
+  /** The thickness of the progress circle */
+  strokeWidth?: number;
 };
 
 export const CircularProgress: FC<CircularProgressProps> = ({
   colors,
-  percentageComplete = 0,
-  radius = 100,
-  strokeWidth = 20,
   backgroundColor = '#F0F8FF',
   duration = 1250,
   granularity = 200,
+  percentageComplete = 0,
+  radius = 100,
+  rotation = 0,
+  strokeWidth = 20,
 }) => {
   const { cos, sin, PI } = Math;
   const prevPercentageComplete = useRef(0);
   const r = PixelRatio.roundToNearestPixel(radius - strokeWidth / 2);
   const animationState = useValue(0);
 
-  // The duration is for 100% progress, so we adjust based on the delta
+  // The duration is for 100% progress, so we adjust it based on the progress delta from the
+  // previous state so that a small  increase in progress does not use the full duration
   const adjustedDuration =
     ((percentageComplete - prevPercentageComplete.current) / 100) * duration;
 
@@ -77,8 +88,15 @@ export const CircularProgress: FC<CircularProgressProps> = ({
 
   const step = (2 * PI) / granularity;
 
-  const arcs = new Array(granularity).fill(0).map((_, i) => {
-    return (2 * PI * i) / granularity;
+  const convertDegreesToRadians = (degrees: number) =>
+    ((2 * PI * degrees) / 360) % 360;
+
+  // An array of the angles in radians of each sub-section of the progress chart.
+  // We make an array with `granularity * 2` elements so that progress can go up to 200%
+  const arcs = new Array(granularity * 2).fill(0).map((_, i) => {
+    return (
+      (2 * PI * i) / granularity + PI / 2 + convertDegreesToRadians(rotation)
+    );
   });
 
   const x = (α: number) => radius - r * cos(α);
