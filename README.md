@@ -6,6 +6,8 @@
 
 An animated progress circle with an angular gradient. The differentiator between this package and other React Native animated circular progress charts with a gradient is that the start color can be different than the stop color.
 
+This package has only 2 dependencies (*@shopify/react-native-skia* and *color-interpolate*) and does **not** require *react-native-reanimated* to also be installed and configured for your project. 
+
 This project is inspired by this [YouTube](https://www.youtube.com/watch?v=7SCzL-XnfUU) tutorial.
 
 ## Installation
@@ -30,7 +32,7 @@ yarn add react-native-progress-circle-gradient
 | granularity        | Smaller progress circle charts can use a smaller granularity to increase performance | Number   | 200       |          |
 | percentageComplete | The percentage of progress completed ranging from 0-100                              | Number   | 0         |          |
 | radius             | The radius of the progress circle in points, measured from the center of the stroke  | Number   | 100       |          |
-| rotation             | The rotation of circular progress chart in degrees                                 | Number   | 0       |          |
+| rotation             | The rotation of the progress circle in degrees                                 | Number   | 0       |          |
 | strokeWidth        | The thickness of the progress circle                                                 | Number   | 30        |          |
 
 ## Usage

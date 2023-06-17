@@ -30,21 +30,21 @@ type Line = {
 };
 
 type CircularProgressProps = {
-  /** The color hex values array to be used for the angular gradient */
+  /** Color hex values array to be used for the angular gradient */
   colors: string[];
-  /** The color hex value for the remaining progress */
+  /** Color hex value for the remaining progress */
   backgroundColor?: string;
   /** Duration of the animation in milliseconds */
   duration?: number;
   /** Smaller progress circle charts can use a smaller granularity to increase performance */
   granularity?: number;
-  /** The percentage of progress completed ranging from 0-100 */
+  /** Percentage of progress completed ranging from 0-200 */
   percentageComplete?: number;
-  /** The radius of the progress circle in points, measured from the center of the stroke */
+  /** Radius of the progress circle in points, measured from the center of the stroke */
   radius?: number;
-  /** Rotation of circular progress chart in degrees */
+  /** Rotation of progress circle in degrees */
   rotation?: number;
-  /** The thickness of the progress circle */
+  /** Thickness of the progress circle */
   strokeWidth?: number;
 };
 
