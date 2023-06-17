@@ -1,6 +1,6 @@
 {
   "name": "react-native-progress-circle-gradient",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "React Native component for making animated circular progress charts with an angular gradient using react-native-skia",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
