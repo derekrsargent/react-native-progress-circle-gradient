@@ -6,7 +6,7 @@
 
 An animated progress circle with an angular gradient. The differentiator between this package and other React Native animated circular progress charts with a gradient is that the start color can be different than the stop color.
 
-This package has only 2 dependencies (*@shopify/react-native-skia* and *color-interpolate*) and does **not** require *react-native-reanimated* to also be installed and configured for your project.
+This package has only 2 dependencies (_@shopify/react-native-skia_ and _color-interpolate_). It has 0 peer dependencies and so does **not** require _react-native-reanimated_ to also be installed, linked and configured for your project.
 
 This project is inspired by this [YouTube](https://www.youtube.com/watch?v=7SCzL-XnfUU) tutorial.
 
@@ -54,6 +54,26 @@ import { CircularProgress } from 'react-native-progress-circle-gradient';
 ![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example1.gif)
 
 ```js
+import { CircularProgress } from 'react-native-progress-circle-gradient';
+
+// ...
+
+<CircularProgress
+  backgroundColor={'#1F1B24'}
+  radius={128}
+  strokeWidth={20}
+  percentageComplete={progress}
+  colors={['#0000FF', '#00FF00']}
+  duration={3000}
+  onAnimationFinish={() => {
+    Alert.alert('Animation has finished!');
+  }}
+/>;
+```
+
+![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example6.gif)
+
+```js
 <CircularProgress
   backgroundColor={'#1F1B24'}
   radius={100}
@@ -71,18 +91,6 @@ import { CircularProgress } from 'react-native-progress-circle-gradient';
   radius={100}
   strokeWidth={20}
   percentageComplete={percentageComplete}
-  colors={['#0000FF', '#FF0000', '#00FF00']}
-/>
-```
-
-![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example2.gif)
-
-```js
-<CircularProgress
-  backgroundColor={'#1F1B24'}
-  radius={100}
-  strokeWidth={20}
-  percentageComplete={percentageComplete}
   colors={['#0000FF', '#00FF00', '#0000FF']}
   rotation={270}
 />
@@ -92,8 +100,8 @@ import { CircularProgress } from 'react-native-progress-circle-gradient';
 
 ## Roadmap
 
-- Add support for children components (e.g. Text)
-- Add support for prop overloading
+- Add support for text once default system fonts become available in [this PR](https://github.com/Shopify/react-native-skia/issues/1249)
+- Add support for children components
 
 ## Contributing
 

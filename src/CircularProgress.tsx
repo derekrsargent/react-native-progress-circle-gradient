@@ -19,7 +19,7 @@ import {
 } from '@shopify/react-native-skia';
 
 import type { FC } from 'react';
-import type { SkPaint, SkPoint } from '@shopify/react-native-skia';
+import type { CanvasProps, SkPaint, SkPoint } from '@shopify/react-native-skia';
 
 type Line = {
   x0: number;
@@ -29,15 +29,21 @@ type Line = {
   paint: SkPaint;
 };
 
-type CircularProgressProps = {
+type EasingOptions = 'cubic' | 'ease' | 'linear' | 'quad';
+
+interface CircularProgressProps extends Omit<CanvasProps, 'children'> {
   /** Color hex values array to be used for the angular gradient */
   colors: string[];
   /** Color hex value for the remaining progress */
   backgroundColor?: string;
   /** Duration of the animation in milliseconds */
   duration?: number;
+  /** Easing options for animation */
+  easing?: EasingOptions;
   /** Smaller progress circle charts can use a smaller granularity to increase performance */
   granularity?: number;
+  /** Callback for when animation reaches 100% */
+  onAnimationFinish?: () => void;
   /** Percentage of progress completed ranging from 0-200 */
   percentageComplete?: number;
   /** Radius of the progress circle in points, measured from the center of the stroke */
@@ -46,20 +52,24 @@ type CircularProgressProps = {
   rotation?: number;
   /** Thickness of the progress circle */
   strokeWidth?: number;
-};
+}
 
 export const CircularProgress: FC<CircularProgressProps> = ({
   colors,
   backgroundColor = '#F0F8FF',
   duration = 1250,
+  easing = 'cubic',
   granularity = 200,
+  onAnimationFinish = () => {},
   percentageComplete = 0,
   radius = 100,
   rotation = 0,
   strokeWidth = 20,
+  ...props
 }) => {
   const { cos, sin, PI } = Math;
   const prevPercentageComplete = useRef(0);
+  const isAnimationComplete = useRef(false);
   const r = PixelRatio.roundToNearestPixel(radius - strokeWidth / 2);
   const animationState = useValue(0);
 
@@ -72,10 +82,23 @@ export const CircularProgress: FC<CircularProgressProps> = ({
     animationState.current = prevPercentageComplete.current / 100;
     runTiming(animationState, percentageComplete / 100, {
       duration: adjustedDuration,
-      easing: Easing.cubic,
+      easing: Easing[easing],
     });
     prevPercentageComplete.current = percentageComplete;
-  }, [adjustedDuration, animationState, percentageComplete]);
+  }, [adjustedDuration, animationState, easing, percentageComplete]);
+
+  // https://github.com/Shopify/react-native-skia/issues/239
+  useEffect(() => {
+    const unsubscribe = animationState.addListener((value) => {
+      if (value >= 1.0 && !isAnimationComplete.current) {
+        isAnimationComplete.current = true;
+        onAnimationFinish();
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [animationState, onAnimationFinish]);
 
   const path = Skia.Path.Make();
   path.addCircle(radius, radius, r);
@@ -140,7 +163,10 @@ export const CircularProgress: FC<CircularProgressProps> = ({
   const lines = calculateLines();
 
   return (
-    <Canvas style={{ width: radius * 2 + 2, height: radius * 2 + 2 }}>
+    <Canvas
+      style={{ width: radius * 2 + 2, height: radius * 2 + 2 }}
+      {...props}
+    >
       <Group>
         {!!backgroundColor && (
           <Mask

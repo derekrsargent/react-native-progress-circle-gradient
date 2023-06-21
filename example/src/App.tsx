@@ -1,6 +1,5 @@
 import * as React from 'react';
-
-import { StyleSheet, View, Pressable, Text } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { CircularProgress } from 'react-native-progress-circle-gradient';
 
 export default function App() {
@@ -14,9 +13,13 @@ export default function App() {
           radius={128}
           strokeWidth={20}
           percentageComplete={progress}
-          colors={['#0000FF', '#00FF00', '#FF0000']}
+          colors={['#0000FF', '#00FF00']}
+          duration={3000}
+          onAnimationFinish={() => {
+            Alert.alert('Animation has finished!');
+          }}
         />
-        <Pressable onPress={() => setProgress(progress + 25)}>
+        <Pressable onPress={() => setProgress(progress + 100)}>
           <Text style={styles.text}>Press me</Text>
         </Pressable>
       </View>
