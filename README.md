@@ -29,7 +29,9 @@ yarn add react-native-progress-circle-gradient
 | colors             | The color hex values array to be used for the angular gradient                       | String[] | N/A       | ✓        |
 | backgroundColor    | The color hex value for the remaining progress                                       | String   | '#F0F8FF' |          |
 | duration           | The duration of the animation in milliseconds                                        | Number   | 1250      |          |
+| easing  |          | The easing options for the animation: 'cubic', 'ease', 'linear', 'quad'              | String   | 1250      |          |
 | granularity        | Smaller progress circle charts can use a smaller granularity to increase performance | Number   | 200       |          |
+| onAnimationFinish  | Callback for when animation reaches 100%                                             | Function | N/A       |          |
 | percentageComplete | The percentage of progress completed ranging from 0-100                              | Number   | 0         |          |
 | radius             | The radius of the progress circle in points, measured from the center of the stroke  | Number   | 100       |          |
 | rotation           | The rotation of the progress circle in degrees                                       | Number   | 0         |          |

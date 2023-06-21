@@ -19,7 +19,7 @@ export default function App() {
             Alert.alert('Animation has finished!');
           }}
         />
-        <Pressable onPress={() => setProgress(progress + 100)}>
+        <Pressable onPress={() => setProgress(progress + 25)}>
           <Text style={styles.text}>Press me</Text>
         </Pressable>
       </View>

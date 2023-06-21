@@ -60,7 +60,7 @@ export const CircularProgress: FC<CircularProgressProps> = ({
   duration = 1250,
   easing = 'cubic',
   granularity = 200,
-  onAnimationFinish = () => {},
+  onAnimationFinish,
   percentageComplete = 0,
   radius = 100,
   rotation = 0,
@@ -92,7 +92,7 @@ export const CircularProgress: FC<CircularProgressProps> = ({
     const unsubscribe = animationState.addListener((value) => {
       if (value >= 1.0 && !isAnimationComplete.current) {
         isAnimationComplete.current = true;
-        onAnimationFinish();
+        onAnimationFinish?.();
       }
     });
     return () => {
