@@ -4,9 +4,9 @@
 [![Version](https://img.shields.io/npm/v/react-native-progress-circle-gradient.svg)](https://www.npmjs.com/package/react-native-progress-circle-gradient)
 [![npm](https://img.shields.io/npm/dt/react-native-progress-circle-gradient.svg)](https://www.npmjs.com/package/react-native-progress-circle-gradient)
 
-An animated progress circle with an angular gradient. The differentiator between this package and other React Native animated circular progress charts with a gradient is that the start color can be different than the stop color.
+An animated progress circle with an angular gradient using _react-native-skia_. The **differentiator** between this package and other React Native animated circular progress charts with a gradient is that the start color can be different than the stop color.
 
-This package has only 2 dependencies (_@shopify/react-native-skia_ and _color-interpolate_). It has 0 peer dependencies and so does **not** require _react-native-reanimated_ to also be installed, linked and configured for your project.
+This package has only 2 dependencies (_@shopify/react-native-skia_ and _color-interpolate_). It has 0 peer dependencies and so does **not** require _react-native-reanimated_ or _react-native-svg to also be installed, linked or configured for your project.
 
 This project is inspired by this [YouTube](https://www.youtube.com/watch?v=7SCzL-XnfUU) tutorial.
 
@@ -29,7 +29,7 @@ yarn add react-native-progress-circle-gradient
 | colors             | The color hex values array to be used for the angular gradient                       | String[] | N/A       | ✓        |
 | backgroundColor    | The color hex value for the remaining progress                                       | String   | '#F0F8FF' |          |
 | duration           | The duration of the animation in milliseconds                                        | Number   | 1250      |          |
-| easing             | The easing options for the animation: 'cubic', 'ease', 'linear', 'quad'              | String   | 1250      |          |
+| easing             | The easing options for the animation: 'cubic', 'ease', 'linear', 'quad'              | String   | 'cubic'   |          |
 | granularity        | Smaller progress circle charts can use a smaller granularity to increase performance | Number   | 200       |          |
 | onAnimationFinish  | Callback for when animation reaches 100%                                             | Function | N/A       |          |
 | percentageComplete | The percentage of progress completed ranging from 0-100                              | Number   | 0         |          |
@@ -66,6 +66,7 @@ import { CircularProgress } from 'react-native-progress-circle-gradient';
   strokeWidth={20}
   percentageComplete={progress}
   colors={['#0000FF', '#00FF00']}
+  easing={'quad'}
   duration={3000}
   onAnimationFinish={() => {
     Alert.alert('Animation has finished!');
@@ -102,6 +103,7 @@ import { CircularProgress } from 'react-native-progress-circle-gradient';
 
 ## Roadmap
 
+- Add functions for animation pause, play and reset
 - Add support for text once default system fonts become available in [this PR](https://github.com/Shopify/react-native-skia/issues/1249)
 - Add support for children components
 
