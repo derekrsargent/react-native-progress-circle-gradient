@@ -6,7 +6,7 @@
 
 An animated progress circle with an angular gradient using _react-native-skia_. The **differentiator** between this package and other React Native animated circular progress charts with a gradient is that the start color can be different than the stop color.
 
-This package has only 2 dependencies (_@shopify/react-native-skia_ and _color-interpolate_). It has 0 peer dependencies and so does **not** require _react-native-reanimated_ or _react-native-svg to also be installed, linked or configured for your project.
+This package has only 2 dependencies (_@shopify/react-native-skia_ and _color-interpolate_). It has 0 peer dependencies and so does **not** require _react-native-reanimated_ or _react-native-svg_ to also be installed, linked or configured for your project.
 
 This project is inspired by this [YouTube](https://www.youtube.com/watch?v=7SCzL-XnfUU) tutorial.
 
