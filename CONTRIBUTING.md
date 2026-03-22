@@ -6,59 +6,120 @@ We want this community to be friendly and respectful to each other. Please follo
 
 ## Development workflow
 
-To get started with the project, run `yarn` in the root directory to install the required dependencies for each package:
+### 1. Install dependencies (npm)
+
+From the **repository root**:
 
 ```sh
-yarn
+npm install
 ```
 
-> While it's possible to use [`npm`](https://github.com/npm/cli), the tooling is built around [`yarn`](https://classic.yarnpkg.com/), so you'll have an easier time if you use `yarn` for development.
-
-While developing, you can run the [example app](/example/) to test your changes. Any changes you make in your library's JavaScript code will be reflected in the example app without a rebuild. If you change any native code, then you'll need to rebuild the example app.
-
-To start the packager:
+The **example app** is a separate package. Install its dependencies too:
 
 ```sh
-yarn example start
+cd example
+npm install
+cd ..
 ```
 
-To run the example app on Android:
+This repo uses **npm** for development. Use the same Node version as the project expects (see `.nvmrc` if present).
+
+### 2. Run the example app (Expo)
+
+The example lives in [`example/`](./example/). It uses **Expo** with **native modules** (Skia, Reanimated), so you typically use a **development build** (`expo run:*`), not Expo Go alone.
+
+All commands below are run from the **`example`** directory unless noted.
+
+#### Generate native `ios/` and `android/` folders — `expo prebuild`
+
+`expo prebuild` creates or updates the **native Xcode / Gradle projects** from your Expo config (`app.json`, plugins, etc.). You need this before `expo run:ios` / `expo run:android` if those folders are missing or after changing native-related config.
 
 ```sh
-yarn example android
+cd example
+npx expo prebuild
 ```
 
-To run the example app on iOS:
+Useful variants:
+
+| Command | When to use |
+| -------- | ----------- |
+| `npx expo prebuild` | First-time setup, or after config changes that affect native code. |
+| `npx expo prebuild --clean` | Regenerate native projects from scratch (removes existing `ios/` / `android/` first). Use when native deps or plugins change and you hit odd build issues. |
+| `npx expo prebuild --platform ios` | Only generate the **iOS** project. |
+| `npx expo prebuild --platform android` | Only generate the **Android** project. |
+
+#### Start Metro (JavaScript bundler)
 
 ```sh
-yarn example ios
+cd example
+npm start
 ```
 
-To run the example app on Web:
+This runs `expo start`. Press `i` for iOS simulator or `a` for Android emulator if you already have a dev build installed—or use the run commands below to build and launch in one step.
+
+#### Build and run on iOS (simulator or device)
 
 ```sh
-yarn example web
+cd example
+npx expo run:ios
 ```
 
-Make sure your code passes TypeScript and ESLint. Run the following to verify:
+This compiles the native app, installs it, and starts Metro. First run can take several minutes.
+
+Optional:
 
 ```sh
-yarn typecheck
-yarn lint
+npx expo run:ios --device          # physical iPhone (requires signing setup in Xcode)
+npx expo run:ios --configuration Release
 ```
 
-To fix formatting errors, run the following:
+#### Build and run on Android
 
 ```sh
-yarn lint --fix
+cd example
+npx expo run:android
 ```
 
-Remember to add tests for your change if possible. Run the unit tests by:
+#### Web (optional)
 
 ```sh
-yarn test
+cd example
+npm run web
 ```
 
+### 3. Library code and fast refresh
+
+While Metro is running, edits under [`src/`](./src/) in the **root** package are picked up by the example app (see `example/metro.config.js` for how the library is linked). **JavaScript/TypeScript changes** usually hot reload without a native rebuild.
+
+If you change **native** code, Expo config, or versions of Skia/Reanimated/etc., run **`npx expo prebuild`** again if needed, then **`npx expo run:ios`** / **`npx expo run:android`** to rebuild.
+
+### 4. Quality checks (from repository root)
+
+TypeScript:
+
+```sh
+npm run typecheck
+```
+
+ESLint:
+
+```sh
+npm run lint
+```
+
+Auto-fix where possible:
+
+```sh
+npm run lint -- --fix
+```
+
+Tests:
+
+```sh
+npm test
+```
+
+---
 
 ### Commit message convention
 
@@ -67,7 +128,7 @@ We follow the [conventional commits specification](https://www.conventionalcommi
 - `fix`: bug fixes, e.g. fix crash due to deprecated method.
 - `feat`: new features, e.g. add new method to the module.
 - `refactor`: code refactor, e.g. migrate from class components to hooks.
-- `docs`: changes into documentation, e.g. add usage example for the module..
+- `docs`: changes to documentation, e.g. add usage example for the module.
 - `test`: adding or updating tests, e.g. add integration tests using detox.
 - `chore`: tooling changes, e.g. change CI config.
 
@@ -75,33 +136,39 @@ Our pre-commit hooks verify that your commit message matches this format when co
 
 ### Linting and tests
 
-[ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [TypeScript](https://www.typescriptlang.org/)
-
-We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) for linting and formatting the code, and [Jest](https://jestjs.io/) for testing.
+We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) for linting and formatting, and [Jest](https://jestjs.io/) for testing.
 
 Our pre-commit hooks verify that the linter and tests pass when committing.
 
 ### Publishing to npm
 
-We use [release-it](https://github.com/release-it/release-it) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases etc.
+We use [release-it](https://github.com/release-it/release-it) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases, etc.
 
-To publish new versions, run the following:
+From the **repository root**:
 
 ```sh
-yarn release
+npm run release
 ```
 
-### Scripts
+### Root `package.json` scripts
 
-The `package.json` file contains various scripts for common tasks:
+| Script | Description |
+| ------ | ----------- |
+| `npm run typecheck` | Type-check with TypeScript. |
+| `npm run lint` | Lint with ESLint. |
+| `npm test` | Run unit tests with Jest. |
+| `npm run release` | Publish / version with release-it (maintainers). |
 
-- `yarn bootstrap`: setup project by installing all dependencies and pods.
-- `yarn typecheck`: type-check files with TypeScript.
-- `yarn lint`: lint files with ESLint.
-- `yarn test`: run unit tests with Jest.
-- `yarn example start`: start the Metro server for the example app.
-- `yarn example android`: run the example app on Android.
-- `yarn example ios`: run the example app on iOS.
+### Example `package.json` scripts (`example/`)
+
+| Script | Description |
+| ------ | ----------- |
+| `npm start` | `expo start` — Metro / dev server. |
+| `npm run ios` | `expo run:ios` — same as `npx expo run:ios` with local CLI resolution. |
+| `npm run android` | `expo run:android`. |
+| `npm run web` | `expo start --web`. |
+
+---
 
 ### Sending a pull request
 
