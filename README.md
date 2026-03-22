@@ -6,7 +6,7 @@
 
 **High-performance circular progress with an angular (sweep) gradient** for React Native—built on [**React Native Skia**](https://shopify.github.io/react-native-skia/) and [**React Native Reanimated**](https://docs.swmansion.com/react-native-reanimated/) so your ring stays **buttery smooth at 60 FPS** (device refresh rate permitting) while React stays out of the per-frame hot path.
 
-![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example7.gif)
+![](https://github.com/derekrsargent/react-native-progress-circle-gradient/blob/main/example/assets/example7.mov)
 
 ---
 
