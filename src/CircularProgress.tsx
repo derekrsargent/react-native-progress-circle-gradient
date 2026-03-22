@@ -1,35 +1,33 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { PixelRatio } from 'react-native';
-import interpolate from 'color-interpolate';
 import {
   Canvas,
   Circle,
-  Drawing,
-  Easing,
   Group,
-  Mask,
-  PaintStyle,
   Path,
-  runTiming,
   Skia,
-  StrokeCap,
-  StrokeJoin,
-  TileMode,
-  useValue,
+  SweepGradient,
+  vec,
 } from '@shopify/react-native-skia';
+import {
+  Easing,
+  runOnJS,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import type { FC } from 'react';
-import type { CanvasProps, SkPaint, SkPoint } from '@shopify/react-native-skia';
-
-type Line = {
-  x0: number;
-  y0: number;
-  x1: number;
-  y1: number;
-  paint: SkPaint;
-};
+import type { CanvasProps } from '@shopify/react-native-skia';
 
 type EasingOptions = 'cubic' | 'ease' | 'linear' | 'quad';
+
+const EASING_MAP = {
+  cubic: Easing.cubic,
+  ease: Easing.ease,
+  linear: Easing.linear,
+  quad: Easing.quad,
+} as const;
 
 interface CircularProgressProps extends Omit<CanvasProps, 'children'> {
   /** Color hex values array to be used for the angular gradient */
@@ -40,8 +38,6 @@ interface CircularProgressProps extends Omit<CanvasProps, 'children'> {
   duration?: number;
   /** Easing options for animation */
   easing?: EasingOptions;
-  /** Smaller progress circle charts can use a smaller granularity to increase performance */
-  granularity?: number;
   /** Callback for when animation reaches 100% */
   onAnimationFinish?: () => void;
   /** Percentage of progress completed ranging from 0-200 */
@@ -59,7 +55,6 @@ export const CircularProgress: FC<CircularProgressProps> = ({
   backgroundColor = '#F0F8FF',
   duration = 1250,
   easing = 'cubic',
-  granularity = 200,
   onAnimationFinish,
   percentageComplete = 0,
   radius = 100,
@@ -67,143 +62,93 @@ export const CircularProgress: FC<CircularProgressProps> = ({
   strokeWidth = 20,
   ...props
 }) => {
-  const { cos, sin, PI } = Math;
   const prevPercentageComplete = useRef(0);
-  const isAnimationComplete = useRef(false);
   const r = PixelRatio.roundToNearestPixel(radius - strokeWidth / 2);
-  const animationState = useValue(0);
+  const progress = useSharedValue(0);
 
-  // The duration is for 100% progress, so we adjust it based on the progress delta from the
-  // previous state so that a small  increase in progress does not use the full duration
   const adjustedDuration =
     ((percentageComplete - prevPercentageComplete.current) / 100) * duration;
 
   useEffect(() => {
-    animationState.current = prevPercentageComplete.current / 100;
-    runTiming(animationState, percentageComplete / 100, {
-      duration: adjustedDuration,
-      easing: Easing[easing],
-    });
-    prevPercentageComplete.current = percentageComplete;
-  }, [adjustedDuration, animationState, easing, percentageComplete]);
-
-  // https://github.com/Shopify/react-native-skia/issues/239
-  useEffect(() => {
-    const unsubscribe = animationState.addListener((value) => {
-      if (value >= 1.0 && !isAnimationComplete.current) {
-        isAnimationComplete.current = true;
-        onAnimationFinish?.();
+    progress.value = withTiming(
+      percentageComplete / 100,
+      {
+        duration: adjustedDuration,
+        easing: EASING_MAP[easing],
+      },
+      (finished) => {
+        'worklet';
+        if (finished && percentageComplete >= 100 && onAnimationFinish) {
+          runOnJS(onAnimationFinish)();
+        }
       }
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, [animationState, onAnimationFinish]);
-
-  const path = Skia.Path.Make();
-  path.addCircle(radius, radius, r);
-
-  const basePaint = Skia.Paint();
-  basePaint.setStrokeWidth(strokeWidth);
-  basePaint.setStyle(PaintStyle.Stroke);
-  basePaint.setStrokeJoin(StrokeJoin.Round);
-  basePaint.setStrokeCap(StrokeCap.Round);
-
-  const step = (2 * PI) / granularity;
-
-  const convertDegreesToRadians = (degrees: number) =>
-    ((2 * PI * degrees) / 360) % 360;
-
-  // An array of the angles in radians of each sub-section of the progress chart.
-  // We make an array with `granularity * 2` elements so that progress can go up to 200%
-  const arcs = new Array(granularity * 2).fill(0).map((_, i) => {
-    return (
-      (2 * PI * i) / granularity + PI / 2 + convertDegreesToRadians(rotation)
     );
-  });
+    prevPercentageComplete.current = percentageComplete;
+  }, [
+    adjustedDuration,
+    easing,
+    percentageComplete,
+    progress,
+    onAnimationFinish,
+  ]);
 
-  const x = (α: number) => radius - r * cos(α);
-  const y = (α: number) => -r * sin(α) + radius;
+  const path = useMemo(() => {
+    const p = Skia.Path.Make();
+    p.addCircle(radius, radius, r);
+    return p;
+  }, [radius, r]);
 
-  const palette = interpolate(colors);
+  const firstLayerEnd = useDerivedValue(() => Math.min(progress.value, 1));
 
-  const calculateXY = (α: number, idx: number) => {
-    const x0 = x(α);
-    const y0 = y(α);
-    const x1 = x(α + step);
-    const y1 = y(α + step);
+  const secondLayerEnd = useDerivedValue(() => Math.max(progress.value - 1, 0));
 
-    const paint = basePaint.copy();
+  const startCapOpacity = useDerivedValue(() => (progress.value > 0 ? 1 : 0));
 
-    const p0: SkPoint = { x: x0, y: y0 };
-    const p1: SkPoint = { x: x1, y: y1 };
-
-    const gradient = Skia.Shader.MakeLinearGradient(
-      p0,
-      p1,
-      [palette(idx / granularity), palette((idx + 1) / granularity)].map(
-        (color) => Skia.Color(color)
-      ),
-      null,
-      TileMode.Clamp
-    );
-    paint.setShader(gradient);
-    return { x0, y0, x1, y1, paint };
-  };
-
-  function calculateLines() {
-    const lines: Line[] = [];
-    arcs.forEach((arc, idx) => {
-      const line = calculateXY(arc, idx);
-      lines.push(line);
-    });
-    return lines;
-  }
-
-  const lines = calculateLines();
+  const center = vec(radius, radius);
+  const rotationRadians = ((rotation - 90) * Math.PI) / 180;
+  const lastColor = colors[colors.length - 1] ?? colors[0]!;
 
   return (
-    <Canvas
-      style={{ width: radius * 2 + 2, height: radius * 2 + 2 }}
-      {...props}
-    >
-      <Group>
+    <Canvas style={{ width: radius * 2, height: radius * 2 }} {...props}>
+      <Group origin={center} transform={[{ rotate: rotationRadians }]}>
         {!!backgroundColor && (
-          <Mask
-            // White pixels will be visible and black pixels invisible
-            mode="luminance"
-            mask={
-              <Group>
-                <Path
-                  path={path}
-                  color="white"
-                  style="stroke"
-                  strokeJoin="round"
-                  strokeWidth={strokeWidth}
-                  strokeCap="round"
-                />
-              </Group>
-            }
-          >
-            <Circle
-              cx={radius}
-              cy={radius}
-              r={radius}
-              color={backgroundColor}
-            />
-          </Mask>
+          <Path
+            path={path}
+            color={backgroundColor}
+            style="stroke"
+            strokeJoin="round"
+            strokeWidth={strokeWidth}
+            strokeCap="round"
+          />
         )}
-        <Drawing
-          drawing={({ canvas }) => {
-            lines.forEach((line, idx) => {
-              const point = idx / granularity;
-              if (point <= animationState.current) {
-                // TODO: fix animation being janky without this timeout
-                setTimeout(() => {}, 0);
-                canvas.drawLine(line.x0, line.y0, line.x1, line.y1, line.paint);
-              }
-            });
-          }}
+        <Path
+          path={path}
+          style="stroke"
+          strokeJoin="round"
+          strokeWidth={strokeWidth}
+          strokeCap="round"
+          start={0}
+          end={firstLayerEnd}
+        >
+          <SweepGradient c={center} colors={colors} />
+        </Path>
+        <Group opacity={startCapOpacity}>
+          <Circle
+            cx={radius + r}
+            cy={radius}
+            r={strokeWidth / 2}
+            color={colors[0]!}
+          />
+        </Group>
+        <Path
+          path={path}
+          color={lastColor}
+          style="stroke"
+          strokeJoin="round"
+          strokeWidth={strokeWidth}
+          strokeCap="round"
+          start={0}
+          end={secondLayerEnd}
         />
       </Group>
     </Canvas>
