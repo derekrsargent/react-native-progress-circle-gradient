@@ -467,7 +467,7 @@ export const CircularProgress = Object.assign(CircularProgressRoot, {
 
 const styles = StyleSheet.create({
   childrenContainer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
   },
